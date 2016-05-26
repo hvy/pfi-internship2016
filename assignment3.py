@@ -59,16 +59,16 @@ def backward(x, h, y, W1, b1, W2, b2):
     return gW1, gb1, gW2, gb2
 
 
-def mean_squared_error(y, t, scale=0.5):
-    """Return the mean squared error (MSE). The loss is scaled with a factor,
-    with a default value of 0.5.
+def squared_error(y, t, scale=0.5):
+    """Return the scaled squared error. Note that the error is not averaged,
+    i.e. it does not compute the mean squared error.
 
     Args:
         y (list): Actual outputs. 1 dimensional.
         t (list): Target outputs. Same dimensions as `y`.
 
     Returns:
-        list: Scaled MSE of the two given lists.
+        list: Scaled squared error of the two given lists.
     """
     assert len(y) == len(t)
 
@@ -163,7 +163,7 @@ if __name__ == '__main__':
     h, y = forward(x, W1, b1, W2, b2)
 
     # Compute the loss so that it can be compared to the post iteration loss
-    loss_prior_iter = mean_squared_error(y, x)
+    loss_prior_iter = squared_error(y, x, scale=0.5)
 
     # Backward propagation
     gW1, gb1, gW2, gb2 = backward(x, h, y, W1, b1, W2, b2)
@@ -183,7 +183,7 @@ if __name__ == '__main__':
 
     # Loss after the weight update
     h, y = forward(x, W1, b1, W2, b2)
-    loss_after_iter = mean_squared_error(y, x)
+    loss_after_iter = squared_error(y, x, scale=0.5)
 
     print('Loss before iteration: {}'.format(loss_prior_iter))
     print('Loss after iteration: {}'.format(loss_after_iter))

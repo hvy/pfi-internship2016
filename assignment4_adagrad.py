@@ -94,13 +94,13 @@ class AutoencoderAdaGrad(Autoencoder):
 if __name__ == '__main__':
     # Train an Autoencoder model, with AdaGrad
 
-    N, D, xs = dataset.read('dataset.dat')
+    N, D, xs = dataset.read('data/dataset.dat')
 
     mean = 0
     stddev = math.sqrt(1 / D)
 
     n_hidden_units = 5
-    n_epochs = 100
+    n_epochs = 20
 
     # The initial learning rate should be much higher e.g. 1.0 than in normal
     # SGD without AdaGrad, since the adaption will take care of the scaling.
@@ -124,5 +124,5 @@ if __name__ == '__main__':
 
         print('Epoch: {} Avg. loss: {}'.format(epoch, average_loss))
 
-    out_filename = 'output/assignment4_AdaGrad_params_' + str(int(time.time()))
-    exporter.export_model(out_filename, model)
+    # out_filename = 'output/assignment4_AdaGrad_params_' + str(int(time.time()))
+    # exporter.export_model(out_filename, model)

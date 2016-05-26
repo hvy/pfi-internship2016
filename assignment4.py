@@ -1,7 +1,7 @@
 import math
 import time
 from utils import dataset, randomizer, exporter
-from assignment3 import forward, backward, mean_squared_error, optimize_sgd
+from assignment3 import forward, backward, squared_error, optimize_sgd
 
 
 class Autoencoder:
@@ -46,7 +46,7 @@ class Autoencoder:
                                           self.b2)
             self.optimize(h, y, gW1, gb1, gW2, gb2)
 
-        loss = mean_squared_error(y, x)
+        loss = squared_error(y, x, scale=0.5)
 
         return loss
 
@@ -70,7 +70,7 @@ class Autoencoder:
 if __name__ == '__main__':
     # Train an Autoencoder model
 
-    N, D, xs = dataset.read('dataset.dat')
+    N, D, xs = dataset.read('data/dataset.dat')
 
     # Parameters for initializing the ranom parameters. The standard deviation
     # is set with respect to the dimensions of the inputs.
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     stddev = math.sqrt(1 / D)
 
     n_hidden_units = 5
-    n_epochs = 100
+    n_epochs = 20
     initial_learning_rate = 0.001
 
     model = Autoencoder(n_in=D, n_units=n_hidden_units,
@@ -100,8 +100,8 @@ if __name__ == '__main__':
             total_loss += loss
         average_loss = total_loss / N
 
-        print('Epoch: {} Avg. loss: {}'.format(epoch, average_loss))
+        print('Epoch: {} Avg. loss: {}'.format(epoch + 1, average_loss))
 
     # Uncomment the following lines to save the trained parameters to a file
-    out_filename = 'output/assignment4_params_' + str(int(time.time()))
-    exporter.export_model(out_filename, model)
+    # out_filename = 'output/assignment4_params_' + str(int(time.time()))
+    # exporter.export_model(out_filename, model)
