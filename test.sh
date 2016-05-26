@@ -1,6 +1,9 @@
 #!/bin/bash
 
+set -e
+
 scripts=(
+    "utils/dataset.py"
     "assignment1.py"
     "assignment2.py"
     "assignment3.py"
@@ -15,4 +18,4 @@ do
   python $i
 done
 
-printf "Done running all assingments\n"
+printf "Finished all scripts without errors.\n"
