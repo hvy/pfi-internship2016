@@ -29,7 +29,7 @@ class Autoencoder(chainer.Chain):
         Returns:
             chainer.Variable: Loss.
         """
-        # Testing different activation functions.
+        # Test different activation functions and dropout.
         h = self.l1(x)
         y = self.l2(h)
 
@@ -44,7 +44,6 @@ class Autoencoder(chainer.Chain):
             return self.loss
         else:
             return y
-
 
 
 def split(xs, fst_half_rate=0.7):
@@ -78,17 +77,18 @@ if __name__ == '__main__':
 
     N, D, xs = dataset.read('data/dataset.dat')
 
-    n_epochs = 10000
+    n_epochs = 1000
 
     # Test different batch sizes.
     batchsize = 100
 
     # Proprocess the training data, e.g. split it for cross validation
     # or add noise to train a Denoising Autoencoder
+
     xs = np.asarray(xs, dtype=np.float32)
 
     # Use a subset of the training data as the validation data.
-    cross_validation_rate = 0.2
+    cross_validation_rate = 0  # 0 disables cross validation
     if cross_validation_rate:
         xs_train, xs_val = split(xs, fst_half_rate=cross_validation_rate)
     else:
@@ -100,57 +100,52 @@ if __name__ == '__main__':
     x_train = xs_train.copy()
     y_train = xs_train.copy()
 
-    # Validation data
-    vals = Variable(np.asarray(xs_val), volatile=True)
-
     # Train a Denoising Autoencoder
-    noise = False
-    if noise:
-        add_masking_noise(x_train, rate=0.1)
+    noise_rate = 0  # 0 to add no noise
+    if noise_rate:
+        add_masking_noise(x_train, rate=noise_rate)
 
     # Test different optimization algoritms.
-    optimizer = optimizers.SGD(lr=0.01)
+    # optimizer = optimizers.SGD(lr=0.01)
     # optimizer = optimizers.AdaGrad(lr=0.001, eps=1e-08)
     # optimizer = optimizers.AdaDelta(rho=0.95, eps=1e-06)
     # optimizer = optimizers.Adam(alpha=0.001, beta1=0.9, beta2=0.999, eps=1e-08)
-    # optimizer = optimizers.MomentumSGD(lr=0.01, momentum=0.9)
+    optimizer = optimizers.MomentumSGD(lr=0.001, momentum=0.9)
     # optimizer = optimizers.RMSprop(lr=0.01, alpha=0.99, eps=1e-08)
-    # optimizer = optimizers.RMSpropGraves(lr=0.0001, slpha=0.95, momentum=0.9, eps=0.0001)
+    # optimizer = optimizers.RMSpropGraves(lr=0.0001, alpha=0.95, momentum=0.9, eps=0.0001)
 
     model = Autoencoder()
     optimizer.setup(model)
 
-    validation_loss = []
-    training_loss = []
+    # Store epoch losses for plotting purpose
+    train_losses = []
+    val_losses = []
 
     for epoch in range(n_epochs):
 
         trainsize = x_train.shape[0]
         indexes = np.random.permutation(trainsize)
 
-        # Optimize
+        # Train
         for i in range(0, trainsize, batchsize):
             x = Variable(np.asarray(x_train[indexes[i:i + batchsize]]))
             t = Variable(np.asarray(y_train[indexes[i:i + batchsize]]))
             optimizer.update(model, x, t)
 
-        # Compute the loss, after the optimization
+        # Loss on training data
+        x = Variable(np.asarray(x_train), volatile=True)
+        t = Variable(np.asarray(y_train), volatile=True)
+        train_loss = model(x, t)
+        train_losses.append(train_loss.data)
 
-        # Loss on training set
-        x_train_all = Variable(np.asarray(x_train), volatile=True)
-        y_train_all = Variable(np.asarray(y_train), volatile=True)
+        if cross_validation_rate > 0:
+            # Loss on validation data
+            x = Variable(np.asarray(xs_val), volatile=True)
+            val_loss = model(x, x)
+            val_losses.append(val_loss.data)
 
-        average_loss_training = model(x_train_all, y_train_all)
-        training_loss.append(average_loss_training.data)
-
-        # Loss on validation set
-        average_loss = model(vals, vals)
-        validation_loss.append(average_loss.data)
-
-        print('Epoch: {} Avg. loss: {}'.format(epoch, average_loss_training.data))
+        print('Epoch: {} Loss(Training): {}'.format(epoch, train_loss.data))
 
     # Uncomment the following lines to save the trained parameters to a file
-    # out_filename = 'output/assignment5_loss_' + str(int(time.time()) + '.csv')
-    # out_filename = 'output/assignment5_loss_' + str(batchsize) + '.csv'
-    exporter.export_list('valloss.csv', validation_loss)
-    exporter.export_list('trainloss.csv', training_loss)
+    # exporter.export_list('output/val_losses.csv', val_losses)
+    # exporter.export_list('output/train_losses.csv', val_losses)

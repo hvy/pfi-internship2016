@@ -124,5 +124,5 @@ if __name__ == '__main__':
 
         print('Epoch: {} Avg. loss: {}'.format(epoch, average_loss))
 
-    # out_filename = 'output/assignment4_AdaGrad_params_' + str(int(time.time()))
+    # out_filename = 'output/assignment4_adagrad_params_' + str(int(time.time()))
     # exporter.export_model(out_filename, model)

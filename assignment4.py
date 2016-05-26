@@ -103,5 +103,5 @@ if __name__ == '__main__':
         print('Epoch: {} Avg. loss: {}'.format(epoch + 1, average_loss))
 
     # Uncomment the following lines to save the trained parameters to a file
-    # out_filename = 'output/new_assignment4_params_' + str(int(time.time()))
+    # out_filename = 'output/assignment4_params_' + str(int(time.time()))
     # exporter.export_model(out_filename, model)
