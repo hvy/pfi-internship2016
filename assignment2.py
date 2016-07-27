@@ -3,9 +3,9 @@ def affine(x, W, b):
     a list with the dimensions of `b`.
 
     Args:
-        x (list): 1-dimensional list that is to be transformed.
-        W (list): 2-dimensional list representing the transformation.
-        b (list): 1-dimensional list that is added to the transformation.
+        x (list): List that is to be transformed. 1 dimensional.
+        W (list): List representing the transformation. 2 dimensional.
+        b (list): List that is added to the transformation. 1 dimensional.
 
     Returns:
         list: Affine transformation list with the same dimensions as `b`.

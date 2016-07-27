@@ -101,7 +101,7 @@ if __name__ == '__main__':
     y_train = xs_train.copy()
 
     # Train a Denoising Autoencoder
-    noise_rate = 0  # 0 to add no noise
+    noise_rate = 0  # 0 adds no noise
     if noise_rate:
         add_masking_noise(x_train, rate=noise_rate)
 
@@ -144,7 +144,7 @@ if __name__ == '__main__':
             val_loss = model(x, x)
             val_losses.append(val_loss.data)
 
-        print('Epoch: {} Loss(Training): {}'.format(epoch, train_loss.data))
+        print('Epoch: {} Avg. loss: {}'.format(epoch + 1, train_loss.data))
 
     # Uncomment the following lines to save the trained parameters to a file
     # exporter.export_list('output/val_losses.csv', val_losses)

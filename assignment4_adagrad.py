@@ -10,7 +10,7 @@ class AutoencoderAdaGrad(Autoencoder):
     identity function f(x) = x as its activation function and optimizes with
     Stochastic Gradient Descent (SGD).
 
-    The learning rates for each parameters is adapted individually using
+    The learning rates for each parameters is adapted independently using
     AdaGrad.
     """
     def __init__(self, n_in, n_units, lr=0.01, mean=0, stddev=0.01):
@@ -122,7 +122,7 @@ if __name__ == '__main__':
             total_loss += loss
         average_loss = total_loss / N
 
-        print('Epoch: {} Avg. loss: {}'.format(epoch, average_loss))
+        print('Epoch: {} Avg. loss: {}'.format(epoch + 1, average_loss))
 
     # out_filename = 'output/assignment4_adagrad_params_' + str(int(time.time()))
     # exporter.export_model(out_filename, model)

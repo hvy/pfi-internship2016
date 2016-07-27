@@ -49,6 +49,7 @@ def backward(x, h, y, W1, b1, W2, b2):
 
     # gh = W2T * gy
     gh = []
+
     for W2T_i in transpose(W2):
         gh_i = sum(w_ij * gy_i for w_ij, gy_i in zip(W2T_i, gy))
         gh.append(gh_i)
@@ -96,8 +97,8 @@ def scalar_mul(eta, x):
     where each element in `x` is multiplied by `eta`.
 
     Args:
-        x (list): Vector to scale. 1 or 2 dimensional.
         eta (float) Scalar to apply to `x`.
+        x (list): Vector to scale. 1 or 2 dimensional.
 
     Returns:
         list: A scaled list. Same dimensions as `x`.
